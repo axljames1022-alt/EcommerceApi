@@ -2,10 +2,8 @@ package com.ws101.busa.balading.ecommerceapiv2.model;
 
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * Category entity. One category has many products
- */
 @Entity
 @Table(name = "categories")
 public class Category {
@@ -16,15 +14,11 @@ public class Category {
 
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products;
 
-    public Category() {}
-
-    public Category(String name) {
-        this.name = name;
-    }
-
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

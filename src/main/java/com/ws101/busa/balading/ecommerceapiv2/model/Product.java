@@ -1,11 +1,12 @@
 package com.ws101.busa.balading.ecommerceapiv2.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Product entity for Task 2
- */
 @Entity
 @Table(name = "products")
 public class Product {
@@ -14,11 +15,17 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Product name is required")
     private String name;
+
+    @NotNull(message = "Price is required")
+    @Positive(message = "Price must be positive")
     private Double price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JsonProperty("category")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    @NotNull(message = "Category is required")
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
