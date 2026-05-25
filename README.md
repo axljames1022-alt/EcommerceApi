@@ -107,3 +107,32 @@ GET http://localhost:8080/api/v1/products
 - **In-memory storage**: Data is stored in a HashMap and will be lost when the application restarts.
 - **No database**: This version does not use a database like MySQL or PostgreSQL.
 - **No authentication**: The API is publicly accessible without login or token.
+
+## Database Schema
+
+### Table: `products`
+| Column | Type | Description |
+| --- | --- | --- |
+| id | BIGINT | Primary Key, Auto Increment |
+| name | VARCHAR(255) | Product name |
+| price | DECIMAL(10,2) | Product price |
+| description | TEXT | Product description |
+
+### Relationships
+- Currently only 1 table: `products`
+- No foreign key relationships yet
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/api/products` | Get all products from database |
+| POST | `/api/products` | Add new product to database |
+
+## Screenshots
+
+### Database Table with Data
+![DatabaseTable.png](DatabaseTable.png)
+
+### Browser Console - Successful Fetch
+![BrowserConsole.png](BrowserConsole.png)
