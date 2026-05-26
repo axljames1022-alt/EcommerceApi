@@ -1,33 +1,30 @@
 package com.ws101.busa.balading.ecommerceapiv2.controller;
 
-import com.ws101.busa.balading.ecommerceapiv2.model.Product;
-import com.ws101.busa.balading.ecommerceapiv2.service.ProductService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) Long categoryId) {
-        List<Product> products = productService.getProducts(categoryId);
-        return ResponseEntity.ok(products);
+    public ResponseEntity<?> getAllProducts() {
+        // kahit sino logged in pwede dito
+        return ResponseEntity.ok("List of products");
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
-        Product savedProduct = productService.createProduct(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createProduct(@RequestBody Object product) {
+        // ADMIN lang pwede gumawa
+        return ResponseEntity.ok("Product created");
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        // ADMIN lang pwede mag-delete
+        return ResponseEntity.ok("Product deleted");
     }
 }
