@@ -34,9 +34,9 @@ Supports CRUD operations, filtering by category, searching by name, and input va
 
 **API Test Results:**
 
-![GET Test](test1.png)
-![POST Test](test2.png)
-![POST Test](test3.png)
+![GET Test](screenshots/test1.png)
+![POST Test](screenshots/test2.png)
+![POST Test](screenshots/test3.png)
 ## Sample Request/Response Examples
 
 ### Create Product - POST /api/v1/products
@@ -136,3 +136,63 @@ GET http://localhost:8080/api/v1/products
 
 ### Browser Console - Successful Fetch
 ![BrowserConsole.png](BrowserConsole.png)
+
+# Ecommerce API v2 - Task 9 Final Documentation
+
+## 1. README.md
+
+### Security Architecture
+This application uses **Session-Based Authentication** with Cookies and Server-side Sessions.
+
+**How it works:**
+1. User submits credentials to `/login`
+2. Spring Security validates against the database using BCrypt password encoder
+3. Server creates an HTTP session and stores the authentication object
+4. Server sends `JSESSIONID` cookie to the browser
+5. For subsequent requests, browser sends the cookie automatically
+6. Spring Security reads the session and grants access to protected resources
+7. Session is destroyed on logout, revoking access
+
+### Validation Rules
+Validation is applied using Jakarta Bean Validation with `@Valid` and `GlobalExceptionHandler`.
+
+| Entity | Field | Constraint | Error Message |
+| --- | --- | --- | --- |
+| Product | name | @NotBlank | Product name is required |
+| Product | price | @NotNull, @Positive | Price must be greater than 0 |
+| User | username | @NotBlank, @Size(min=3, max=50) | Username must be 3-50 characters |
+| User | password | @NotBlank, @Size(min=6) | Password must be at least 6 characters |
+| User | email | @NotBlank, @Email | Valid email is required |
+
+### API Reference
+| Method | Endpoint | Auth Required | Description |
+| --- | --- | --- | --- |
+| POST | /api/v1/auth/register | No | Register new user account |
+| POST | /login | No | Login with username and password |
+| GET | /api/v1/auth/user/me | Yes | Get current logged in user |
+| GET | /api/v1/auth/admin/me | Yes - ADMIN | Get admin info |
+| POST | /api/v1/products | Yes - USER/ADMIN | Create product with validation |
+| POST | /logout | Yes | Logout and invalidate session |
+
+## 2. Code Quality
+- All security configurations in `SecurityConfig.java` are commented with JavaDoc and inline comments
+- Validation error messages are user-friendly and handled globally via `GlobalExceptionHandler.java`
+- Passwords are hashed using BCrypt before saving to database
+
+## 3. Testing Results / Image Demo
+
+### Test 1: Register and Login
+Shows successful user registration and login with session creation.
+![Register/Login](screenshots/register.png)
+
+### Test 2: Protected Action Fails Without Session
+Accessing `/api/v1/products` without JSESSIONID returns `401 Unauthorized`.
+![401 Unauthorized](screenshots/401.png)
+
+### Test 3: Protected Action Succeeds With Session
+Accessing `/api/v1/products` with valid JSESSIONID returns `200 OK`.
+![Authorized Access](screenshots/200.png)
+
+### Test 4: Validation Error
+Submitting invalid data (empty name, negative price) returns `400 Bad Request` with specific error messages.
+![Validation Error](screenshots/400.png)

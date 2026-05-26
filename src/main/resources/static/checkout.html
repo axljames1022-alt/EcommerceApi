@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
 </head>
 <body>
-$END$
+<h1>Checkout Page</h1>
+<p id="user-info">Checking if logged in...</p>
+<a href="/logout">Logout</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('/api/v1/auth/user/me', { credentials: 'include' });
+            if (!res.ok) throw new Error('Not logged in');
+            const data = await res.json();
+            document.getElementById('user-info').innerText = 'Logged in as: ' + data.username;
+        } catch (error) {
+            document.getElementById('user-info').innerText = 'Not logged in. Redirecting...';
+            setTimeout(() => window.location.href = '/login', 1500);
+        }
+    });
+</script>
 </body>
 </html>
