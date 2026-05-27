@@ -1,15 +1,16 @@
 package com.ws101.busa.balading.ecommerceapiv2.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class TestController {
 
-    @GetMapping("/test-auth")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String testAuth() {
-        return "You are admin";
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("You accessed a protected route!");
     }
 }
